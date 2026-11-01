@@ -15,7 +15,8 @@
         "backgroundColor": "#E6F4FE"
       },
       "predictiveBackGestureEnabled": false,
-      "navigationBarColor": "#17181B"
+      "navigationBarColor": "#17181B",
+      "package": "com.oluwalolope.personalfinanceapp"
     },
     "plugins": [
       "expo-router",
