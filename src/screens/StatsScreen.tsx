@@ -34,6 +34,8 @@ export default function StatsScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
+      {/* Cap behind the translucent status bar so content never bleeds through */}
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: insets.top, backgroundColor: C.blue, zIndex: 10 }} />
       <ScrollView contentContainerStyle={{ paddingBottom: 60 }}>
         <View style={{ backgroundColor: C.blue, paddingTop: insets.top + 16, paddingHorizontal: 20, paddingBottom: 56, overflow: 'hidden' }}>
           <View style={{ position: 'absolute', right: -40, top: 20, width: 190, height: 190, borderRadius: 95, backgroundColor: '#ffffff12' }} />
