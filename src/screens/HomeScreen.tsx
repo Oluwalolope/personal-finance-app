@@ -21,6 +21,7 @@ export default function HomeScreen() {
 
   const sent = b.splits.filter((s) => s.done).length;
   const todayOver = b.todayLeftAll < 0;
+  const mask = (v: number) => (b.hide ? '••••••' : fmt(v));
 
   const tapSplit = (s: SplitView) => {
     if (!s.done) return b.setSent(s.key, s.amount);
@@ -30,10 +31,12 @@ export default function HomeScreen() {
     ]);
   };
   const splitNote = (s: SplitView) =>
-    s.done ? `Sent ${fmt(s.sent)} to ${s.dest}` : s.sent > 0 ? `${fmt(s.sent)} already sent to ${s.dest}` : `to ${s.dest}`;
+    s.done ? `Sent ${mask(s.sent)} to ${s.dest}` : s.sent > 0 ? `${mask(s.sent)} already sent to ${s.dest}` : `to ${s.dest}`;
 
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
+      {/* Cap behind the translucent status bar so content never bleeds through */}
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: insets.top, backgroundColor: C.blue, zIndex: 10 }} />
       <ScrollView contentContainerStyle={{ paddingBottom: 120 }}>
         <View style={{ backgroundColor: C.blue, paddingTop: insets.top + 16, paddingHorizontal: 20, paddingBottom: 56, overflow: 'hidden' }}>
           <View style={{ position: 'absolute', right: -50, top: -30, width: 200, height: 200, borderRadius: 100, backgroundColor: '#ffffff12' }} />
@@ -44,9 +47,9 @@ export default function HomeScreen() {
             <Text style={{ color: '#DDE1FF' }}>Left to live on in {MAIN_ACCOUNT}  </Text>
             <Ionicons name={b.hide ? 'eye-off-outline' : 'eye-outline'} size={18} color="#DDE1FF" />
           </Pressable>
-          <Text style={{ color: '#fff', fontSize: 40, fontWeight: '800', marginTop: 4 }}>{fmt(b.livingLeft)}</Text>
-          <Text style={{ color: '#CBD0FF' }}>of {fmt(b.available)} available</Text>
-          <Text style={{ color: '#CBD0FF', marginBottom: 20, height: 18 }}>{b.carry !== 0 ? `Includes ${fmt(b.carry)} carried over` : ''}</Text>
+          <Text style={{ color: '#fff', fontSize: 40, fontWeight: '800', marginTop: 4 }}>{b.hide ? '••••••' : fmt(b.livingLeft)}</Text>
+          <Text style={{ color: '#CBD0FF' }}>of {b.hide ? '••••••' : fmt(b.available)} available</Text>
+          <Text style={{ color: '#CBD0FF', marginBottom: 20, height: 18 }}>{b.carry !== 0 ? `Includes ${mask(b.carry)} carried over` : ''}</Text>
           <View style={{ flexDirection: 'row' }}>
             <Btn label="Quick log" kind="yellow" onPress={() => setModal(true)} style={{ marginRight: 10 }} />
             <Btn label="View budget" kind="white" onPress={() => router.push('/budget')} />
@@ -59,20 +62,20 @@ export default function HomeScreen() {
             {b.hasBudgets ? (
               <>
                 <Text style={{ color: todayOver ? C.red : C.green, fontSize: 26, fontWeight: '800' }}>
-                  {todayOver ? `Over by ${fmt(-b.todayLeftAll)}` : `${fmt(b.todayLeftAll)} left`}
+                  {todayOver ? `Over by ${mask(-b.todayLeftAll)}` : `${mask(b.todayLeftAll)} left`}
                 </Text>
-                <Text style={{ color: C.mute, marginTop: 4 }}>Spent {fmt(b.budgetedToday)} of {fmt(b.allowanceToday)} allowed in budgeted sections</Text>
+                <Text style={{ color: C.mute, marginTop: 4 }}>Spent {mask(b.budgetedToday)} of {mask(b.allowanceToday)} allowed in budgeted sections</Text>
                 <Bar value={b.budgetedToday} max={b.allowanceToday} color={todayOver ? C.red : C.green} />
               </>
             ) : (
               <>
-                <Text style={{ color: C.text, fontSize: 26, fontWeight: '800' }}>{fmt(b.spentToday)} spent</Text>
+                <Text style={{ color: C.text, fontSize: 26, fontWeight: '800' }}>{mask(b.spentToday)} spent</Text>
                 <Text style={{ color: C.mute, marginTop: 4 }}>Set a budget on a section in the Budget tab to get a daily allowance.</Text>
               </>
             )}
             {b.isCurrent && b.available > 0 && (
               <Text style={{ color: C.mute, marginTop: 10 }}>
-                Overall, about {fmt(b.dailyOverall)} a day keeps you going to the end of the month.
+                Overall, about {mask(b.dailyOverall)} a day keeps you going to the end of the month.
               </Text>
             )}
           </Card>
@@ -91,7 +94,7 @@ export default function HomeScreen() {
                   </View>
                 </View>
                 <View style={{ alignItems: 'flex-end' }}>
-                  <Text style={{ color: s.done ? C.mute : C.text, fontWeight: '700' }}>{fmt(s.done ? s.sent : s.remaining)}</Text>
+                  <Text style={{ color: s.done ? C.mute : C.text, fontWeight: '700' }}>{mask(s.done ? s.sent : s.remaining)}</Text>
                   {!s.done && s.sent > 0 && <Text style={{ color: C.amber, fontSize: 12 }}>additional</Text>}
                 </View>
               </Pressable>
@@ -99,7 +102,7 @@ export default function HomeScreen() {
           </Card>
 
           <View style={{ flexDirection: 'row', marginBottom: 14 }}>
-            {[['Income', fmt(b.total), C.green], ['Spent', fmt(b.spent), C.text]].map(([l, v, c], i) => (
+            {[['Income', mask(b.total), C.green], ['Spent', mask(b.spent), C.text]].map(([l, v, c], i) => (
               <Card key={l} style={{ flex: 1, marginBottom: 0, marginRight: i === 0 ? 10 : 0 }}>
                 <Text style={{ color: C.mute }}>{l}</Text>
                 <Text style={{ color: c, fontSize: 18, fontWeight: '800', marginTop: 4 }}>{v}</Text>

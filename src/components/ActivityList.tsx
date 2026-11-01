@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Row } from '../types';
 import { C } from '../theme';
 import { fmt, groupLabel, timeLabel } from '../utils';
+import { useBudget } from '../store';
 
 export const confirmDelete = (r: Row, remove: (t: 'income' | 'expenses', id: string) => void) =>
   Alert.alert('Delete this entry?', '', [
@@ -12,6 +13,7 @@ export const confirmDelete = (r: Row, remove: (t: 'income' | 'expenses', id: str
   ]);
 
 export function ActivityRow({ row, onLongPress }: { row: Row; onLongPress?: () => void }) {
+  const { hide } = useBudget();
   const inc = row.type === 'income';
   const sub = [row.note, timeLabel(row.ts)].filter(Boolean).join(' · ');
   return (
@@ -24,7 +26,7 @@ export function ActivityRow({ row, onLongPress }: { row: Row; onLongPress?: () =
         {!!sub && <Text style={{ color: C.mute, fontSize: 12, marginTop: 2 }} numberOfLines={1}>{sub}</Text>}
       </View>
       <View style={{ backgroundColor: inc ? '#12392A' : '#3B1D22', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8 }}>
-        <Text style={{ color: inc ? C.green : C.red, fontWeight: '700', fontSize: 13 }}>{inc ? '+' : '-'}{fmt(row.amount)}</Text>
+        <Text style={{ color: inc ? C.green : C.red, fontWeight: '700', fontSize: 13 }}>{inc ? '+' : '-'}{hide ? '••••••' : fmt(row.amount)}</Text>
       </View>
     </Pressable>
   );

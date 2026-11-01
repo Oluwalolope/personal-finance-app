@@ -17,6 +17,7 @@ export default function StatsScreen() {
   const insets = useSafeAreaInsets();
   if (!b.ready) return null;
   const st = b.stats;
+  const mask = (v: number) => (b.hide ? '••••••' : fmt(v));
   const pct = (v: number) => (st.income > 0 ? Math.round((v / st.income) * 100) : 0);
 
   const segs = [
@@ -47,9 +48,9 @@ export default function StatsScreen() {
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', backgroundColor: '#1A2490', borderRadius: 14, paddingHorizontal: 12, paddingVertical: 9, marginTop: 22 }}>
             <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: C.yellow, marginRight: 8 }} />
-            <Text style={{ color: '#fff', fontWeight: '600' }}>Total income {fmt(st.income)}</Text>
+            <Text style={{ color: '#fff', fontWeight: '600' }}>Total income {mask(st.income)}</Text>
           </View>
-          <Text style={{ color: '#CBD0FF', marginTop: 10 }}>Lived on {fmt(st.spent)} · Sent out {fmt(st.sent)}</Text>
+          <Text style={{ color: '#CBD0FF', marginTop: 10 }}>Lived on {mask(st.spent)} · Sent out {mask(st.sent)}</Text>
         </View>
 
         <View style={{ backgroundColor: C.bg, marginTop: -28, borderTopLeftRadius: 30, borderTopRightRadius: 30, padding: 16, paddingTop: 22 }}>
@@ -63,7 +64,7 @@ export default function StatsScreen() {
                 <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: s.color, marginRight: 10 }} />
                 <Text style={{ flex: 1, color: C.text }} numberOfLines={1}>{s.label}</Text>
                 <Text style={{ color: C.mute, marginRight: 10 }}>{pct(s.value)}%</Text>
-                <Text style={{ color: C.text, fontWeight: '700' }}>{fmt(s.value)}</Text>
+                <Text style={{ color: C.text, fontWeight: '700' }}>{mask(s.value)}</Text>
               </View>
             ))}
           </Card>
@@ -77,11 +78,11 @@ export default function StatsScreen() {
                 <View key={s.key} style={tileBox(t.bg, t.fg + '33')}>
                   <Text style={{ color: t.fg, fontWeight: '800' }} numberOfLines={1}>{s.label}</Text>
                   <View>
-                    <Text style={{ color: C.text, fontSize: 18, fontWeight: '800', marginTop: 8 }}>{fmt(s.sent)}</Text>
+                    <Text style={{ color: C.text, fontSize: 18, fontWeight: '800', marginTop: 8 }}>{mask(s.sent)}</Text>
                     <Text style={{ color: C.mute, fontSize: 12 }}>sent to {s.dest}</Text>
                     <Bar value={s.sent} max={s.due} color={t.fg} />
                     <Text style={{ color: left > 0 ? C.amber : C.mute, fontSize: 12, marginTop: 6 }}>
-                      {left > 0 ? `${fmt(left)} still to send` : 'Fully sent'}
+                      {left > 0 ? `${mask(left)} still to send` : 'Fully sent'}
                     </Text>
                   </View>
                 </View>
@@ -90,10 +91,10 @@ export default function StatsScreen() {
             <View style={tileBox(LIVED.bg, LIVED.fg + '33')}>
               <Text style={{ color: LIVED.fg, fontWeight: '800' }}>Lived on</Text>
               <View>
-                <Text style={{ color: C.text, fontSize: 18, fontWeight: '800', marginTop: 8 }}>{fmt(st.spent)}</Text>
+                <Text style={{ color: C.text, fontSize: 18, fontWeight: '800', marginTop: 8 }}>{mask(st.spent)}</Text>
                 <Text style={{ color: C.mute, fontSize: 12 }}>spent from {MAIN_ACCOUNT}</Text>
                 <Bar value={st.spent} max={st.spent + Math.max(st.livingLeft, 0)} color={LIVED.fg} />
-                <Text style={{ color: st.livingLeft < 0 ? C.red : C.mute, fontSize: 12, marginTop: 6 }}>{fmt(st.livingLeft)} left to live on</Text>
+                <Text style={{ color: st.livingLeft < 0 ? C.red : C.mute, fontSize: 12, marginTop: 6 }}>{mask(st.livingLeft)} left to live on</Text>
               </View>
             </View>
           </View>
@@ -103,9 +104,9 @@ export default function StatsScreen() {
           {st.monthly.map((m) => (
             <Card key={m.mk}>
               <Text style={{ color: C.text, fontSize: 16, fontWeight: '700' }}>{monthKeyTitle(m.mk)}</Text>
-              {line('Income', fmt(m.income), C.green)}
-              {line('Sent out', `${fmt(m.sent)} of ${fmt(m.due)}`)}
-              {line('Lived on', fmt(m.spent))}
+              {line('Income', mask(m.income), C.green)}
+              {line('Sent out', `${mask(m.sent)} of ${mask(m.due)}`)}
+              {line('Lived on', mask(m.spent))}
             </Card>
           ))}
         </View>

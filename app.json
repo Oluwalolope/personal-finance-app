@@ -14,7 +14,8 @@
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "navigationBarColor": "#17181B"
     },
     "plugins": [
       "expo-router",

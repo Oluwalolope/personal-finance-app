@@ -25,6 +25,8 @@ export default function BudgetScreen() {
   const [editing, setEditing] = useState<Category | null>(null);
   if (!b.ready) return null;
 
+  const mask = (v: number) => (b.hide ? '••••••' : fmt(v));
+
   const openEntry = (cat: string | null = null) => { setPreCat(cat); setEntry(true); };
   const openSection = (c: Category | null) => { setEditing(c); setSectionModal(true); };
   const exportCsv = async () => {
@@ -55,10 +57,10 @@ export default function BudgetScreen() {
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', backgroundColor: '#1A2490', borderRadius: 14, paddingHorizontal: 12, paddingVertical: 9, marginTop: 22 }}>
             <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: C.yellow, marginRight: 8 }} />
-            <Text style={{ color: '#fff', fontWeight: '600' }}>{fmt(b.livingLeft)} left of {fmt(b.available)}</Text>
+            <Text style={{ color: '#fff', fontWeight: '600' }}>{mask(b.livingLeft)} left of {mask(b.available)}</Text>
           </View>
-          <Text style={{ color: '#CBD0FF', marginTop: 10 }}>Income {fmt(b.total)} · Spent {fmt(b.spent)}</Text>
-          {b.carry !== 0 && <Text style={{ color: '#CBD0FF', marginTop: 2 }}>Carried over {fmt(b.carry)} from earlier months</Text>}
+          <Text style={{ color: '#CBD0FF', marginTop: 10 }}>Income {mask(b.total)} · Spent {mask(b.spent)}</Text>
+          {b.carry !== 0 && <Text style={{ color: '#CBD0FF', marginTop: 2 }}>Carried over {mask(b.carry)} from earlier months</Text>}
         </View>
 
         <View style={{ backgroundColor: C.bg, marginTop: -28, borderTopLeftRadius: 30, borderTopRightRadius: 30, padding: 16, paddingTop: 22 }}>
@@ -80,7 +82,7 @@ export default function BudgetScreen() {
 
           <Text style={{ color: C.text, fontSize: 18, fontWeight: '700', marginTop: 6 }}>Sections</Text>
           <Text style={{ color: C.mute, marginBottom: 12, marginTop: 2 }}>
-            {fmt(b.assigned)} budgeted of {fmt(b.available)} available. Tap a section to log a spend.
+            {mask(b.assigned)} budgeted of {mask(b.available)} available. Tap a section to log a spend.
           </Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
             {b.cats.map((c) => (

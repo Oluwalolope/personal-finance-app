@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { CatView } from '../types';
 import { C, tileAt } from '../theme';
 import { fmt } from '../utils';
+import { useBudget } from '../store';
 
 type Props = { cat: CatView; onPress: () => void; onEdit: () => void };
 
@@ -13,6 +14,8 @@ export const tileBox = (bg: string, border: string) => ({
 });
 
 export default function SectionTile({ cat, onPress, onEdit }: Props) {
+  const { hide } = useBudget();
+  const mask = (v: number) => (hide ? '••••••' : fmt(v));
   const t = tileAt(cat.index);
   const over = cat.hasBudget && cat.left < 0;
   const todayOver = cat.todayLeft < 0;
@@ -29,14 +32,14 @@ export default function SectionTile({ cat, onPress, onEdit }: Props) {
         <Text style={{ color: t.fg, fontWeight: '800', fontSize: 16 }} numberOfLines={1}>{cat.name}</Text>
         {cat.hasBudget ? (
           <>
-            <Text style={{ color: over ? C.red : C.text, fontSize: 13, marginTop: 4 }}>{fmt(cat.left)} left</Text>
+            <Text style={{ color: over ? C.red : C.text, fontSize: 13, marginTop: 4 }}>{mask(cat.left)} left</Text>
             <Text style={{ color: todayOver ? C.red : C.mute, fontSize: 12 }}>
-              {todayOver ? `Over today by ${fmt(-cat.todayLeft)}` : `${fmt(cat.todayLeft)} left today`}
+              {todayOver ? `Over today by ${mask(-cat.todayLeft)}` : `${mask(cat.todayLeft)} left today`}
             </Text>
           </>
         ) : (
           <>
-            <Text style={{ color: C.text, fontSize: 13, marginTop: 4 }}>{fmt(cat.spent)} spent</Text>
+            <Text style={{ color: C.text, fontSize: 13, marginTop: 4 }}>{mask(cat.spent)} spent</Text>
             <Text style={{ color: C.mute, fontSize: 12 }}>No budget set</Text>
           </>
         )}
